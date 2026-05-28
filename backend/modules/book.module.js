@@ -1,0 +1,37 @@
+import mongoose from "mongoose";
+
+const bookSchema = mongoose.Schema({
+  title: {
+    type: String,
+    required: [true, "Please add a book title"],
+  },
+
+  author: {
+    type: String,
+    required: [true, "Please add an author name"],
+  },
+
+  price: {
+    type: Number,
+    required: [true, "Please add a valid price"],
+  },
+
+  description: {
+    type: String,
+    require:[true, "please add a description"]
+  },
+  coverImage:{
+    type: String,
+    require: false
+  },
+  download:{
+    type: String,
+    require: false
+  },
+},{
+    timestamps:true
+});
+
+const Book = mongoose.model("Book", bookSchema)
+
+export default Book
