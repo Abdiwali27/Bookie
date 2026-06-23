@@ -22,11 +22,11 @@ const bookSchema = mongoose.Schema({
   },
   coverImage:{
     type: String,
-    require: false
+    required: false
   },
   download:{
     type: String,
-    require: false
+    required: false
   },
 },{
     timestamps:true
