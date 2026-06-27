@@ -37,13 +37,13 @@ const Home = () => {
       </Link>
     </div>
   ) : (
-    <div className="grid grid-cols-1 sm:gride-cols-2 lg:grid-cols-3 xl:grid-4 gap-6">
-      { 
-        books.map((book)=>(<div>
-           <BookCard key={book._id} book={book}/>
-        </div>))
-      }
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+  {books.map((book) => (
+    <div key={book._id}>
+      <BookCard book={book} />
     </div>
+  ))}
+</div>
   )}
 </div>
   );

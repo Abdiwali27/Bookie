@@ -24,7 +24,7 @@ const bookSchema = mongoose.Schema({
     type: String,
     required: false
   },
-  download:{
+  downloadLink:{
     type: String,
     required: false
   },
