@@ -1,6 +1,29 @@
-const BookFrom = () => {
+import { Download } from "lucide-react";
+import { useState } from "react";
+const BookFrom = ({onSubmit, isLoading}) => {
+  const [formData, setFormData] = useState({
+    title:"",
+    author:"",
+    price:'',
+    description:'',
+    coverImage:'',
+    Download: ''
+  })
+  const handleChange = (e) => {
+  setFormData((prev) => ({
+    ...prev,
+    [e.target.name]: e.target.value,
+  }));
+};
+const handleSubmit=(e)=>{
+e.preventDefault();
+onSubmit({
+  ...formData, price:Number(formData.price)
+})
+}
+  console.log(formData)
   return (
-    <form className="space-y-5">
+    <form onSubmit={handleSubmit} className="space-y-5">
       <div>
         <label
           htmlFor="title"
@@ -14,9 +37,10 @@ const BookFrom = () => {
           id="title"
           name="title"
           required
-          value=""
+          value={formData.title}
           className="input-field"
           placeholder="Enter Book Title"
+          onChange={handleChange}
         />
       </div>
 
@@ -30,12 +54,13 @@ const BookFrom = () => {
 
         <input
           type="text"
-          id="Author"
-          name="Author"
+          id="author"
+          name="author"
           required
-          value=""
+           value={formData.author}
           className="input-field"
           placeholder="Enter Author Name"
+          onChange={handleChange}
         />
       </div>
 
@@ -50,12 +75,13 @@ const BookFrom = () => {
         <input
           type="Number"
           id="Price"
-          name="Price"
+          name="price"
           min="0"
           step={0.01}
           required
-          value=""
+          value={formData.price}
           className="input-field"
+          onChange={handleChange}
         />
       </div>
 
@@ -70,12 +96,13 @@ const BookFrom = () => {
         <textarea
           type="Number"
           id="Description"
-          name="Description"
+          name="description"
           rows="4"
           required
-          value=""
+           value={formData.description}
           className="input-field"
           placeholder="Enter Description"
+          onChange={handleChange}
         />
       </div>
 
@@ -91,9 +118,10 @@ const BookFrom = () => {
           type="url"
           id="coverImage"
           name="coverImage"
-          value=""
+           value={formData.coverImage}
           className="input-field"
           placeholder="https://example.com/image.png"
+          onChange={handleChange}
         />
       </div>
 
@@ -108,10 +136,11 @@ const BookFrom = () => {
         <input
           type="url"
           id="DownloadLink"
-          name="DownloadLink"
-          value=""
+          name="downloadLink"
+           value={formData.downloadLink}
           className="input-field"
           placeholder="https://example.com/book.pdf"
+          onChange={handleChange}
         />
       </div>
       <div>

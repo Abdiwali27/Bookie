@@ -16,11 +16,11 @@ export const fetchBooks = createAsyncThunk(
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
-  }
+  },
 );
 
 export const fetchBook = createAsyncThunk(
-  'books/fetchBook',
+  "books/fetchBook",
   async (id, thunkAPI) => {
     try {
       const response = await fetch(`${API_URL}/${id}`);
@@ -33,7 +33,30 @@ export const fetchBook = createAsyncThunk(
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
-  }
+  },
+);
+
+export const createBook = createAsyncThunk(
+  "books/createBook",
+  async (bookData, thunkAPI) => {
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed creste book");
+      }
+
+      return await response.json();
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  },
 );
 
 const initialState = {
@@ -60,43 +83,54 @@ const booksSlice = createSlice({
       state.currentBook = null;
     },
   },
-  extraReducers:(builder)=>{
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchBooks.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
+        state.message = "";
+      })
+      .addCase(fetchBooks.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.books = action.payload;
+      })
 
-  builder.addCase(fetchBooks.pending, (state) => {
-  state.isLoading = true;
-  state.isError = false;
-  state.isSuccess = false;
-  state.message = "";
-  })
-  .addCase(fetchBooks.fulfilled, (state, action) => {
-  state.isLoading = false;
-  state.isSuccess = true;
-  state.books = action.payload;
-})
+      .addCase(fetchBooks.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload || "something went wrong";
+      }) //single fetch
+      .addCase(fetchBook.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchBook.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.currentBook = action.payload;
+      })
 
-.addCase(fetchBooks.rejected, (state, action) => {
-  state.isLoading = false;
-  state.isError = true;
-  state.message = action.payload || "something went wrong";
-}) //single fetch
-.addCase(fetchBook.pending, (state) => {
-  state.isLoading = true;
-   
-  })
-  .addCase(fetchBook.fulfilled, (state, action) => {
-  state.isLoading = false;
-  state.isSuccess = true;
-  state.currentBook = action.payload;
-})
+      .addCase(fetchBook.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload || "something went wrong";
+      }) //create book
+      .addCase(createBook.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createBook.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.books.unshift(action.payload);
+      })
 
-.addCase(fetchBook.rejected, (state, action) => {
-  state.isLoading = false;
-  state.isError = true;
-  state.message = action.payload || "something went wrong";
-})
-
-
-  }
+      .addCase(createBook.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload || "something went wrong";
+      });
+  },
 });
-export const {resetState, clearCurrentBook} = booksSlice.actions
+export const { resetState, clearCurrentBook } = booksSlice.actions;
 export default booksSlice.reducer;
