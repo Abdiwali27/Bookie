@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBook } from "../Redux/API/bookslice";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   Edit2,
   ArrowLeft,
@@ -9,12 +9,14 @@ import {
   Calendar,
   DollarSign,
   Download,
+  Loader2,
 } from "lucide-react";
 
 const BookDetails = () => {
   const {id} = useParams()
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { currentBook, isLoading, isError, message } = useSelector(
     (state) => state.books,
@@ -26,8 +28,20 @@ const BookDetails = () => {
     }
   }, [id, dispatch]);
 
+  useEffect(()=>{
+    if(isError &&!currentBook){
+    navigate('/')
+    }
+  },[isError,message,currentBook])
+
   if (isLoading || !currentBook) {
-    return <h1>loading</h1>;
+  return <div className="flex flex-col gap-10 justify-center items-center p-4">
+    <Loader2 className="animate-spin text-brand-600" size={40} />
+
+    <p className="text-gray-500 font-medium">
+      Loading ...
+    </p>
+  </div>
   }
 
   return (
