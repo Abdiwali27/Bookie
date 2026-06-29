@@ -1,13 +1,13 @@
 import { Download } from "lucide-react";
-import { useState } from "react";
-const BookFrom = ({onSubmit, isLoading}) => {
+import { useState, useEffect } from "react";
+const BookFrom = ({onSubmit, isLoading, initialData}) => {
   const [formData, setFormData] = useState({
     title:"",
     author:"",
     price:'',
     description:'',
     coverImage:'',
-    Download: ''
+    downloadLink: ''
   })
   const handleChange = (e) => {
   setFormData((prev) => ({
@@ -21,7 +21,18 @@ onSubmit({
   ...formData, price:Number(formData.price)
 })
 }
-  console.log(formData)
+useEffect(() => {
+  if (initialData) {
+    setFormData({
+      title: initialData.title || "",
+      author: initialData.author || "",
+      price: initialData.price || "",
+      description: initialData.description || "",
+      coverImage: initialData.coverImage || "",
+      downloadLink: initialData.downloadLink || "",
+    });
+  }
+}, [initialData]);
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <div>
@@ -144,8 +155,8 @@ onSubmit({
         />
       </div>
       <div>
-        <button type="submit" className="btn btn-primary w-full sm:w-auto min-w-[120px">
-          Add Book
+        <button disabled={isLoading} type="submit" className="btn btn-primary w-full sm:w-auto min-w-[120px]">
+           {isLoading?`Saving.....`:(initialData?"Update Book":"Add Book")}
         </button>
       </div>
     </form>

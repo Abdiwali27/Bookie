@@ -59,6 +59,33 @@ export const createBook = createAsyncThunk(
   },
 );
 
+ export const updateBook = createAsyncThunk(
+  "books/updateBook",
+  async ({id, bookData}, thunkAPI) => {
+    try {
+      const response = await fetch(`${API_URL}/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed update book");
+      }
+
+      return await response.json();
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  },
+);
+
+
+
+
+
 const initialState = {
   books: [],
   currentBook: null,
@@ -126,6 +153,20 @@ const booksSlice = createSlice({
       })
 
       .addCase(createBook.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload || "something went wrong";
+      }) //update book
+      .addCase(updateBook.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateBook.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.books=state.books.map((book)=>book.id===action.payload._id?action.payload:book)
+      })
+
+      .addCase(updateBook.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload || "something went wrong";

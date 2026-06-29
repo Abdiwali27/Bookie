@@ -62,7 +62,7 @@ const BookCard = ({ book }) => {
           )}
         </div>
         <div className="flex items-center gap-2">
-          <Link className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+          <Link to={`/edit/${book._id}`} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
             <Edit size={18} />
           </Link>
 
