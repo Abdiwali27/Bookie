@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": "22.x"
+  }
+}
   "scripts": {
      "dev": "node --watch backend/server.js",
      "start": "node backend/server.js",
