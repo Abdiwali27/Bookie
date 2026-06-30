@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { BookText, Download, Edit, Trash2 } from "lucide-react";
 
-const BookCard = ({ book }) => {
+const BookCard = ({ book, onDeleteClick }) => {
   return (
     <div className="card flex flex-col group relative bg-white">
       {/* Cover Image */}
@@ -66,7 +66,7 @@ const BookCard = ({ book }) => {
             <Edit size={18} />
           </Link>
 
-          <button className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+          <button  onClick={()=>onDeleteClick(book)} className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
             <Trash2 size={18} />
           </button>
         </div>

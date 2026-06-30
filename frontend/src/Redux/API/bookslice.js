@@ -82,7 +82,26 @@ export const createBook = createAsyncThunk(
   },
 );
 
+ export const deleteBook = createAsyncThunk(
+  "books/deleteBook",
 
+  async (id, thunkAPI) => {
+    try {
+      const response = await fetch(`${API_URL}/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to Delete Book");
+      }
+
+      const data = await response.json();
+      return data._id;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
 
 
 
@@ -167,6 +186,20 @@ const booksSlice = createSlice({
       })
 
       .addCase(updateBook.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload || "something went wrong";
+      }) //deletebook
+      .addCase(deleteBook.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteBook.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.books=state.books.map((book)=>book._id===action.payload._id?action.payload:book)
+      })
+
+      .addCase(deleteBook.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload || "something went wrong";

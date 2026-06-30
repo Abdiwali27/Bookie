@@ -1,14 +1,23 @@
 import { useDispatch, useSelector } from "react-redux";
-import { fetchBooks } from "../redux/API/bookSlice";
+import { fetchBooks, deleteBook } from "../redux/API/bookSlice";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import BookCard from "../components/BookCard";
+import Modal from "../components/Modal";
+import toast from "react-hot-toast";
  
 
 const Home = () => {
   const dispatch = useDispatch();
 
   const { books, isLoading, isError, message } = useSelector((state) => state.books);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [bookToDelete, setBookToDelete] = useState(null);
+
+  const openDeleteModal=(book)=>{
+    setBookToDelete(book);
+    setDeleteModalOpen(true)
+  }
 
   useEffect(() => {
      if(isError){
@@ -16,6 +25,21 @@ const Home = () => {
      }
      dispatch(fetchBooks())
   }, [dispatch, isError, message]);
+
+  const confirmDelete = async () => {
+  if (bookToDelete) {
+    const resultAction = await dispatch(deleteBook(bookToDelete._id));
+
+    if (deleteBook.fulfilled.match(resultAction)) {
+      toast.success("Book deleted successfully");
+    } else {
+      toast.error("Failed to delete book");
+    }
+
+    setDeleteModalOpen(false);
+    setBookToDelete(null);
+  }
+};
 
   return (
    <div className="">
@@ -40,11 +64,35 @@ const Home = () => {
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
   {books.map((book) => (
     <div key={book._id}>
-      <BookCard book={book} />
+      <BookCard onDeleteClick={openDeleteModal} book={book} />
     </div>
   ))}
 </div>
   )}
+
+  <Modal 
+  isOpen={deleteModalOpen}
+  onClose={()=>setDeleteModalOpen(false)}
+  title="Confirm Delete"
+  >
+   <div>
+  <p>
+  Are you sure you want to delete{" "}
+  <span>{bookToDelete?.title}</span>?
+  This action cannot be undone.
+</p>
+
+  <div className="flex justify-end gap-3">
+    <button onClick={()=>setDeleteModalOpen(false)} className="btn btn-secondary">
+      Cancel
+    </button>
+
+    <button onClick={confirmDelete} className="btn btn-danger">
+      Delete Book
+    </button>
+  </div>
+</div>
+  </Modal>
 </div>
   );
 };
